@@ -2,6 +2,8 @@ import express, { NextFunction, Request, Response } from "express";
 import cors from "cors";
 import router from "./app/routes";
 import { errorHandler } from "./middleware";
+import httpStatus from 'http-status-codes';
+import notFound from "./middleware/notFound";
 
 const app = express();
 
@@ -19,5 +21,8 @@ app.get("/", (req: Request, res: Response) => {
 
 // Error handling middleware (should be last)
 app.use(errorHandler);
+app.use(notFound);
+
+
 
 export default app;

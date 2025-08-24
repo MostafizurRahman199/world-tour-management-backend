@@ -1,26 +1,39 @@
-import { NextFunction, Request, Response } from "express";
-import { Error } from "mongoose";
+import { Request, Response } from "express";
+import catchAsync from "../../utils/catchAsync";
 import { UserServices } from "./user.service";
-import { AppError } from "../../../errors";
+import { sendResponse } from "../../utils/sendResponse";
+
+
+// Create user
+const createUser = catchAsync(async (req: Request, res: Response) => {
+  const result = await UserServices.createUserService(req.body);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: 201,
+    message: "User created successfully",
+    data: result,
+  });
+});
 
 
 
-const createUser = async (req:Request, res:Response, next: NextFunction) => {
-    try {
+// Get all users
+const getAllUsers = catchAsync(async (req: Request, res: Response) => {
+  const result = await UserServices.getAllUsersService();
 
-        // return next(new AppError("User creation failed", 400));
-        const user = await UserServices.createUserService(req.body);
-        res.status(201).json({ message: "User created successfully", user });
+  sendResponse(res, {
+    success: true,
+    statusCode: 200,
+    message: "Users retrieved successfully",
+    data: result.data,
+    meta: result.meta,
+  });
+});
 
-    } catch (error) {
-        next(error);
-    }
+
+
+export const UserController = {
+  createUser,
+  getAllUsers,
 };
-
-
-
-const UserController = {
-    createUser,
-};
-
-export default UserController;
