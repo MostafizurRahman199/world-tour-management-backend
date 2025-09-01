@@ -6,6 +6,7 @@ import { Server } from "http";
 import mongoose from "mongoose";
 import app from "./app";
 import {ENV} from "./app/config/env";
+import { seedSuperAdmin } from "./app/utils/seedSuperAdmin";
 
 
 let server: Server;
@@ -77,5 +78,9 @@ process.on("SIGTERM", () => {
 
 
 
-startServer();
+(async ()=>{
+    await startServer();
+    await seedSuperAdmin();
+
+})();
 

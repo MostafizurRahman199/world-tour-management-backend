@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import catchAsync from "../../utils/catchAsync";
 import { UserServices } from "./user.service";
 import { sendResponse } from "../../utils/sendResponse";
+import { verifyToken } from "../../utils/jwt";
+import { JwtHeader } from "jsonwebtoken";
 
 
 
@@ -65,8 +67,15 @@ const getUserById = catchAsync(async (req: Request, res: Response) => {
 
 // Update user
 const updateUser = catchAsync(async (req: Request, res: Response) => {
+
   const { id } = req.params;
-  const result = await UserServices.updateUserService(id, req.body);
+
+  // const token = req.headers.authorization;
+  // const decodedToken = verifyToken(token as string);
+
+  const decodedToken = req.user;
+
+  const result = await UserServices.updateUserService(id, req.body, decodedToken as JwtHeader);
 
   if (!result) {
     return sendResponse(res, {
