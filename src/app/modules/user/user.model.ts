@@ -1,3 +1,5 @@
+// user.model.ts
+
 import { model, Schema } from "mongoose";
 import { IAuthProvider, IsActive, IUser, Role } from "./user.interface";
 import { required } from "zod/v4/core/util.cjs";

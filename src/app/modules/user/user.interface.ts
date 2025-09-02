@@ -1,3 +1,5 @@
+// user.interface.ts
+
 import { Types } from "mongoose";
 
 export enum Role{
@@ -10,7 +12,7 @@ export enum Role{
 // auth provider 
 
 export interface IAuthProvider {
-    provider: string; //"google" "credentials"
+    provider: "google" | "credentials";
     providerId: string;
 
 }

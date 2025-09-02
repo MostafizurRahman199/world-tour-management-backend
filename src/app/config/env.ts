@@ -29,4 +29,11 @@ export const ENV = {
   DB_URI: getEnvVar('DB_URI'), // Required
   NODE_ENV: getEnvVar('NODE_ENV', false, 'development'),
   IS_PRODUCTION: getEnvVar('NODE_ENV', false, 'development') === 'production',
+  JWT_ACCESS_EXPIRES_IN: getEnvVar('JWT_ACCESS_EXPIRES_IN'),
+  BCRYPT_SALT_ROUNDS: Number(getEnvVar('BCRYPT_SALT_ROUNDS')),
+  JWT_SECRET: getEnvVar('JWT_SECRET'),
+  SUPER_ADMIN_USERNAME: getEnvVar('SUPER_ADMIN_USERNAME'),
+  SUPER_ADMIN_EMAIL: getEnvVar('SUPER_ADMIN_EMAIL'),
+  SUPER_ADMIN_PASSWORD: getEnvVar('SUPER_ADMIN_PASSWORD')
+
 };
