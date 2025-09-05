@@ -6,7 +6,7 @@ import { Role, IsActive } from "./user.interface";
 
 //__________User Registration Zod Schema
 
-export const registerUserSchema = z.object({
+export const registerUserZodSchema = z.object({
   name: z.string()
     .min(1, "Name is required")
     .max(100, "Name cannot exceed 100 characters"),
@@ -46,7 +46,7 @@ export const registerUserSchema = z.object({
 
 //_______Update User Schema (all fields optional, password has different validation)
 
-export const updateUserSchema = z.object({
+export const updateUserZodSchema = z.object({
 
   name: z.string()
     .min(1, "Name is required")
@@ -93,8 +93,8 @@ export const updateUserSchema = z.object({
 
 //______Types for validation
 
-export type RegisterUserInput = z.infer<typeof registerUserSchema>;
-export type UpdateUserInput = z.infer<typeof updateUserSchema>;
+export type RegisterUserInput = z.infer<typeof registerUserZodSchema>;
+export type UpdateUserInput = z.infer<typeof updateUserZodSchema>;
 
 
 
@@ -137,5 +137,5 @@ export const validateRequest = (schema: z.ZodSchema<any>) => {
 
 //_______Specific validation middleware using the general wrapper
 
-export const validateRegisterUser = validateRequest(registerUserSchema);
-export const validateUpdateUser = validateRequest(updateUserSchema);
+export const validateRegisterUser = validateRequest(registerUserZodSchema);
+export const validateUpdateUser = validateRequest(updateUserZodSchema);
