@@ -13,19 +13,57 @@ import { ENV } from "../../config/env";
 
 
 
-const credentialLogin = catchAsync(async (req: Request, res: Response) => {
+// const credentialLogin = catchAsync(async (req: Request, res: Response) => {
 
-    const loginInfo = await AuthServices.credentialLogin(req.body);
+//     // const loginInfo = await AuthServices.credentialLogin(req.body);
 
-    setAuthCookies(res, loginInfo);
+//     passport.authenticate()
+
+ 
+
+//     setAuthCookies(res, loginInfo);
+
+//     sendResponse(res, {
+//         success: true,
+//         statusCode: 201,
+//         message: "User logged in successfully",
+//         data: loginInfo,
+//     });
+// });
+
+
+
+const credentialLogin = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+
+
+  passport.authenticate("local",  
+    
+    async (err : any, user:any, info:any) => {
+
+    if (err) return next(err);
+
+    if (!user) {
+        return next(new AppError(info.message || "Authentication failed", 401));
+    }
+
+    const userToken = createUserToken(user);
+    const {password, ...loginInfo} = user.toObject();
+
+    setAuthCookies(res, userToken);
 
     sendResponse(res, {
-        success: true,
-        statusCode: 201,
-        message: "User logged in successfully",
-        data: loginInfo,
+      success: true,
+      statusCode: 200,
+      message: "User logged in successfully",
+      data: {
+        accessToken: userToken.accessToken,
+        refreshToken: userToken.refreshToken,
+        user: loginInfo
+      },
     });
+  })(req, res, next);
 });
+
 
 
 

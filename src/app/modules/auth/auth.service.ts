@@ -12,32 +12,32 @@ import bcryptjs from "bcryptjs";
 
 
 
-const credentialLogin = async (payload: Partial<IUser>)=>{
+// const credentialLogin = async (payload: Partial<IUser>)=>{
 
-    const {email, password} = payload;
-    const isUserExist = await User.findOne({ email });
+//     const {email, password} = payload;
+//     const isUserExist = await User.findOne({ email });
 
-    if (!isUserExist) {
-    throw new AppError("User not found");
-    }
+//     if (!isUserExist) {
+//     throw new AppError("User not found");
+//     }
 
-    const isPasswordMatch = await bcryptjs.compare(password as string, isUserExist.password as string);
+//     const isPasswordMatch = await bcryptjs.compare(password as string, isUserExist.password as string);
 
-    if (!isPasswordMatch) {
-        throw new AppError("Invalid password");
-    }
-
-
-    const { accessToken, refreshToken } = createUserToken(isUserExist);
-    const {password:pass, ...user} = isUserExist.toObject();
+//     if (!isPasswordMatch) {
+//         throw new AppError("Invalid password");
+//     }
 
 
-    return {
-       accessToken,
-       refreshToken,
-       user 
-    };
-}
+//     const { accessToken, refreshToken } = createUserToken(isUserExist);
+//     const {password:pass, ...user} = isUserExist.toObject();
+
+
+//     return {
+//        accessToken,
+//        refreshToken,
+//        user 
+//     };
+// }
 
 
 
@@ -87,7 +87,7 @@ const resetPassword = async (decodedToken: JwtPayload, newPassword: string, oldP
 
 
 export const AuthServices = {
-  credentialLogin,
+//   credentialLogin,
   getNewAccessToken,
   resetPassword
 };
