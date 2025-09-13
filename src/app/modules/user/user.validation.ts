@@ -3,6 +3,7 @@
 import { z } from "zod";
 import { NextFunction, Request, Response } from "express";
 import { Role, IsActive } from "./user.interface";
+import { validateRequest } from "../../../middleware/validateRequest";
 
 
 
@@ -136,17 +137,7 @@ export type UpdateUserInput = z.infer<typeof updateUserZodSchema>;
 // };
 
 
-export const validateRequest = (schema: z.ZodSchema<any>) => {
-  return (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const validatedData = schema.parse(req.body);
-      req.body = validatedData;
-      next();
-    } catch (error) {
-      next(error); // 👈 Forward error to global errorHandler
-    }
-  };
-};
+
 
 
 //_______Specific validation middleware using the general wrapper

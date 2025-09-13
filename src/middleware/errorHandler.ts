@@ -1,7 +1,3 @@
-
-
-// src/middleware/errorHandler.ts
-
 import { Request, Response, NextFunction } from "express";
 import { ZodError } from "zod";
 import { CustomError } from "../app/interfaces/error.types";
@@ -11,15 +7,11 @@ import { handleMongooseValidationError } from "../app/helpers/handleMongooseVali
 import { handleCastError } from "../app/helpers/handleCastError";
 import { handleJwtError } from "../app/helpers/handleJwtError";
 
-
-
 const MONGO_ERROR_CODES = {
   DUPLICATE_KEY: 11000,
 };
 
-
 /* -------------------- Main Middleware -------------------- */
-
 export const errorHandler = (
   err: CustomError | ZodError,
   req: Request,
@@ -34,36 +26,26 @@ export const errorHandler = (
 
   // Delegate to helper functions
   if (err instanceof ZodError) {
-
     ({ statusCode, status, message, details } = handleZodError(err));
-
   } else if ((err as CustomError).code === MONGO_ERROR_CODES.DUPLICATE_KEY) {
-
     ({ statusCode, status, message, details } = handleDuplicateKeyError(
       err as CustomError
     ));
-
   } else if ((err as CustomError).name === "ValidationError") {
-
     ({ statusCode, status, message, details } = handleMongooseValidationError(
       err as CustomError
     ));
-
   } else if ((err as CustomError).name === "CastError") {
-
     ({ statusCode, status, message } = handleCastError(err as CustomError));
-
   } else if (
     (err as CustomError).name === "JsonWebTokenError" ||
     (err as CustomError).name === "TokenExpiredError"
   ) {
-
     ({ statusCode, status, message } = handleJwtError(err as CustomError));
-
   }
 
-    // Always log error internally
-  if(process.env.NODE_ENV === "development"){
+  // Always log error internally
+  if (process.env.NODE_ENV === "development") {
     console.error("ERROR 💥", {
       name: err.name,
       message: err.message,
@@ -78,9 +60,10 @@ export const errorHandler = (
   const responsePayload: Record<string, any> = { status, message };
   if (details) responsePayload.details = details;
 
+  // Show stack only in development
+  if (process.env.NODE_ENV === "development" && err.stack) {
+    responsePayload.stack = err.stack;
+  }
+
   res.status(statusCode).json(responsePayload);
 };
-
-
-
-
