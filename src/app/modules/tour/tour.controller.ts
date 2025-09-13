@@ -23,7 +23,11 @@ import { TourServices } from "./tour.service";
 
 //get all tours 
  const getAllTour = catchAsync(async(req:Request, res:Response)=>{
-    const result = await TourServices.getAllToursService();
+
+
+  const query = req.query;
+
+    const result = await TourServices.getAllToursService(query as Record<string, string>);
 
     sendResponse(res, {
         success: true,

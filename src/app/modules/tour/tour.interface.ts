@@ -6,7 +6,7 @@ import { Types } from "mongoose";
 
 export interface ITour {
   title: string;
-  slug: string;
+  slug?: string;
   description?: string;
   images?: string[];
   location?: string;

@@ -6,7 +6,7 @@ import { validateRequest } from "../../../middleware/validateRequest";
 // Create Tour Validation Schema
 const createTourValidationSchema = z.object({
   title: z.string().nonempty("Title is required").trim(),
-  slug: z.string().nonempty("Slug is required").trim(),
+  slug: z.string().optional(),
   description: z.string().optional(),
   images: z.array(z.string()).default([]).optional(),
   location: z.string().optional(),

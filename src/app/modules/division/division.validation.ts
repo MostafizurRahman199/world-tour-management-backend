@@ -9,7 +9,7 @@ const createDivisionZodSchema = z.object({
 
   slug: z.string()
     .min(1, "Slug is required")
-    .max(100, "Slug cannot exceed 100 characters"),
+    .max(100, "Slug cannot exceed 100 characters").optional(),
 
   thumbnail: z.string()
     .url("Thumbnail must be a valid URL")
