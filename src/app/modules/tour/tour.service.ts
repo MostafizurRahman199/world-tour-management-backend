@@ -139,10 +139,17 @@ const deleteTourService = async (id: string) => {
 };
 
 
+const getSingleTourService = async (slug: string) => {
+  const result = await Tour.findOne({ slug }); 
+  return result;
+};
+
+
 
 export const TourServices = {
   createTourService,
   getAllToursService,
   updateTourService,
   deleteTourService,
+  getSingleTourService,
 };

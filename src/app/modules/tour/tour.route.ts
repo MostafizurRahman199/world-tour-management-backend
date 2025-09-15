@@ -32,4 +32,6 @@ router.delete(
 
 router.get("/all-tours", TourController.getAllTour);
 
+router.get("/single-tour/:slug", TourController.getSingleTour);
+
 export const TourRouter = router;

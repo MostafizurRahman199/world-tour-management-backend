@@ -64,6 +64,12 @@ const tourSchema = new Schema<ITour>(
       type: Number,
       min: 0,
     },
+    departureLocation:{
+      type:String,
+    },
+    arrivalLocation:{
+      type:String
+    },
     division: {
       type: Schema.Types.ObjectId,
       ref: "Division",

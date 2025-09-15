@@ -3,6 +3,8 @@
 import { Division } from "./division.model";
 import { IDivision} from "./division.interface";
 import { makeSlug } from "../../utils/makeSlug";
+import QueryBuilder from "../../utils/queryBuilder";
+import { DIVISION_SEARCHABLE_FIELDS } from "./division.constant";
 
 
 
@@ -66,9 +68,15 @@ const updateDivisionService = async (
   return result;
 };
 
-// Get All Divisions
- const getAllDivisionsService = async () => {
-  const result = await Division.find().sort({ createdAt: -1 });
+const getAllDivisionsService = async (query: Record<string, any>) => {
+  const qb = new QueryBuilder(Division, query);
+  const result = await qb.execute(DIVISION_SEARCHABLE_FIELDS); // no searchable fields
+  return result;
+};
+
+
+ const getSingleDivisionService = async (slug: string) => {
+  const result = await Division.findOne({ slug }); // find by slug
   return result;
 };
 
@@ -77,5 +85,6 @@ export const DivisionServices = {
     createDivisionService,
     updateDivisionService,
     deleteDivisionService,
-    getAllDivisionsService
+    getAllDivisionsService,
+    getSingleDivisionService
 };

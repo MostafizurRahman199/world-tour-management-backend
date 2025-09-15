@@ -1,6 +1,6 @@
 // src/app/modules/division/division.controller.ts
 
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import catchAsync from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
 import { DivisionServices } from "./division.service";
@@ -18,6 +18,10 @@ export const createDivision = catchAsync(async (req: Request, res: Response) => 
   });
 });
 
+
+
+
+
 // Update division
 export const updateDivision = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
@@ -30,6 +34,11 @@ export const updateDivision = catchAsync(async (req: Request, res: Response) => 
     data: result,
   });
 });
+
+
+
+
+
 
 // Delete division (soft delete or hard delete depending on service)
 export const deleteDivision = catchAsync(async (req: Request, res: Response) => {
@@ -44,9 +53,17 @@ export const deleteDivision = catchAsync(async (req: Request, res: Response) => 
   });
 });
 
+
+
+
+
+
 // Get all divisions
 export const getAllDivisions = catchAsync(async (req: Request, res: Response) => {
-  const result = await DivisionServices.getAllDivisionsService();
+
+  const query = req.query;
+
+  const result = await DivisionServices.getAllDivisionsService(query as Record<string, string>);
 
   sendResponse(res, {
     success: true,
@@ -55,3 +72,35 @@ export const getAllDivisions = catchAsync(async (req: Request, res: Response) =>
     data: result,
   });
 });
+
+
+
+
+
+
+export const getSingleDivision = catchAsync( async (req: Request, res: Response) => {
+    
+    const { slug } = req.params;
+
+    const result = await DivisionServices.getSingleDivisionService(slug);
+
+    if (!result) {
+      return res.status(404).json({
+        success: false,
+        statusCode: 404,
+        message: "Division not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      statusCode: 200,
+      message: "Division retrieved successfully",
+      data: result,
+    });
+  }
+);
+
+
+
+

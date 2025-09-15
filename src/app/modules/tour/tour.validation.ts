@@ -3,11 +3,15 @@
 import { z } from "zod";
 import { validateRequest } from "../../../middleware/validateRequest";
 
+
+
 // Create Tour Validation Schema
 const createTourValidationSchema = z.object({
   title: z.string().nonempty("Title is required").trim(),
   slug: z.string().optional(),
   description: z.string().optional(),
+  arrivalLocation: z.string().optional(),
+  departureLocation: z.string().optional(),
   images: z.array(z.string()).default([]).optional(),
   location: z.string().optional(),
   costFrom: z.number().min(0, "Cost must be a positive number").optional(),
@@ -23,12 +27,16 @@ const createTourValidationSchema = z.object({
   tourType: z.string().nonempty("Tour type ID is required"),
 });
 
+
+
 // Update Tour Validation Schema
 const updateTourValidationSchema = z.object({
   title: z.string().optional(),
   slug: z.string().optional(),
   description: z.string().optional(),
   images: z.array(z.string()).default([]).optional(),
+  arrivalLocation: z.string().optional(),
+  departureLocation: z.string().optional(),
   location: z.string().optional(),
   costFrom: z.number().min(0, "Cost must be a positive number").optional(),
   startDate: z.string().optional(),
