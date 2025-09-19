@@ -1,0 +1,84 @@
+{
+  "info": {
+    "name": "Division API",
+    "_postman_id": "c0a1f000-1234-5678-9abc-def123456789",
+    "description": "Collection to test Division CRUD routes",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Create Division",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"name\": \"Dhaka\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/v1/divisions/create",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": ["api", "v1", "divisions", "create"]
+        }
+      }
+    },
+    {
+      "name": "Update Division",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"name\": \"Chattogram\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/v1/divisions/update-division/{{divisionId}}",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": ["api", "v1", "divisions", "update-division", "{{divisionId}}"]
+        }
+      }
+    },
+    {
+      "name": "Delete Division",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5000/api/v1/divisions/delete-division/{{divisionId}}",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": ["api", "v1", "divisions", "delete-division", "{{divisionId}}"]
+        }
+      }
+    },
+    {
+      "name": "Get All Divisions",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5000/api/v1/divisions",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": ["api", "v1", "divisions"]
+        }
+      }
+    }
+  ]
+}

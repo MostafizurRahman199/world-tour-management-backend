@@ -1,6 +1,9 @@
+//src/app/modules/user/user.validation.ts
+
 import { z } from "zod";
 import { NextFunction, Request, Response } from "express";
 import { Role, IsActive } from "./user.interface";
+import { validateRequest } from "../../../middleware/validateRequest";
 
 
 
@@ -101,37 +104,39 @@ export type UpdateUserInput = z.infer<typeof updateUserZodSchema>;
 
 //_____________General validation wrapper function
 
-export const validateRequest = (schema: z.ZodSchema<any>) => {
-  return (req: Request, res: Response, next: NextFunction) => {
-    try {
-      // Validate request data using the provided schema
-      const validatedData = schema.parse(req.body);
+// export const validateRequest = (schema: z.ZodSchema<any>) => {
+//   return (req: Request, res: Response, next: NextFunction) => {
+//     try {
+//       // Validate request data using the provided schema
+//       const validatedData = schema.parse(req.body);
       
-      // Replace req.body with validated data
-      req.body = validatedData;
+//       // Replace req.body with validated data
+//       req.body = validatedData;
       
-      next();
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        const errorMessages = error.issues.map((issue) => ({
-          field: issue.path.join('.'),
-          message: issue.message,
-        }));
+//       next();
+//     } catch (error) {
+//       if (error instanceof z.ZodError) {
+//         const errorMessages = error.issues.map((issue) => ({
+//           field: issue.path.join('.'),
+//           message: issue.message,
+//         }));
         
-        res.status(400).json({
-          success: false,
-          error: "Invalid request data",
-          details: errorMessages,
-        });
-      } else {
-        res.status(500).json({
-          success: false,
-          error: "Internal server error",
-        });
-      }
-    }
-  };
-};
+//         res.status(400).json({
+//           success: false,
+//           error: "Invalid request data",
+//           details: errorMessages,
+//         });
+//       } else {
+//         res.status(500).json({
+//           success: false,
+//           error: "Internal server error",
+//         });
+//       }
+//     }
+//   };
+// };
+
+
 
 
 

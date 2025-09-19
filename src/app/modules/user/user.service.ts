@@ -5,6 +5,8 @@ import { IAuthProvider, IUser, Role } from "./user.interface";
 import { User } from "./user.model";
 import bcryptjs from "bcryptjs";
 import { de } from "zod/v4/locales/index.cjs";
+import QueryBuilder from "../../utils/queryBuilder";
+import { USER_SEARCHABLE_FIELDS } from "./user.constant";
 
 
 
@@ -40,15 +42,13 @@ const createUserService = async (userData: Partial<IUser>) => {
 
 
 
-const getAllUsersService = async () => {
-  const users = await User.find({});
-  const totalUsers = await User.countDocuments();
+const getAllUsersService = async (query: Record<string, any>) => {
+
+  const userQueryBuilderObj = new QueryBuilder(User, query);
+  const users = await userQueryBuilderObj.execute(USER_SEARCHABLE_FIELDS);
 
   return {
-    data: users,
-    meta: {
-      total: totalUsers,
-    }
+    users
   }
 };
 
