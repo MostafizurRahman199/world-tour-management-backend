@@ -50,7 +50,10 @@ const getSingleBooking = catchAsync(async (req: Request, res: Response) => {
 // Get bookings of logged-in user
 const getMyBookings = catchAsync(async (req: Request, res: Response) => {
 
-  const userId = req.user?._id; // assuming req.user added by checkAuth middleware
+  const decodedToken = req.user as JwtPayload; // assuming req.user added by checkAuth middleware
+  const userId = decodedToken.userId;
+
+ 
   const result = await BookingService.getBookingsByUserService(userId);
  
   sendResponse(res, {
@@ -60,14 +63,15 @@ const getMyBookings = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 
+
 });
 
 
 
 // Update booking status
-const updateBooking = catchAsync(async (req: Request, res: Response) => {
+const updateBookingStatus = catchAsync(async (req: Request, res: Response) => {
   const { bookingId } = req.params;
-  const result = await BookingService.updateBookingService(bookingId, req.body);
+  const result = await BookingService.updateBookingStatusService(bookingId, req.body);
   sendResponse(res, {
     success: true,
     statusCode: 200,
@@ -97,6 +101,7 @@ export const BookingController = {
   getAllBooking,
   getSingleBooking,
   getMyBookings,
-  updateBooking,
+  updateBookingStatus,
   deleteBooking,
+  
 };

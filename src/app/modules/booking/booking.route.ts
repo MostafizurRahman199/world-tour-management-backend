@@ -31,7 +31,7 @@ router.get(
 router.get(
     "/my-Bookings",
     checkAuth(...Object.values(Role)),
-    BookingController.getSingleBooking
+    BookingController.getMyBookings
 );
 
 
@@ -43,10 +43,10 @@ router.get(
 
 
 router.patch(
-  "/:bookingId/status",
+  "/update-status/:bookingId",
   checkAuth(...Object.values(Role)),
   validateUpdateBooking,
-  BookingController.updateBooking
+  BookingController.updateBookingStatus
 );
 
 

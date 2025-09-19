@@ -17,74 +17,6 @@ const getTransactionId = ()=>{
 
 
 
-
-// // Create booking
-// const createBookingService = async (payload:Partial<IBooking>, userId:string) => {
-
-//     const transactionId = getTransactionId();
-  
-//     const session = await BookingModel.startSession();
-//     session.startTransaction();
-
-//     try {
-      
-//         const user = await User.findById(userId, session);
-
-//         if(!user?.phone || !user.address){
-//             throw new AppError("Please update your profile")
-//         }
-
-//         const tour = await Tour.findById(payload.tour, session).select("costFrom");
-
-//         if(!tour?.costFrom){
-//             throw new AppError("No tour cost found");
-//         }
-
-
-//         const amount = Number(tour.costFrom) * Number(payload.guestCount!) ;
-
-//         const booking = await BookingModel.create([{
-//             user:userId,
-//             status : BOOKING_STATUS.PENDING,
-//             ...payload
-//         }] , {session : session})
-
-
-//         const payment =  await PaymentModel.create([{
-//             booking : booking[0]._id,
-//             status : PAYMENT_STATUS.UNPAID,
-//             transactionId: transactionId,
-//             amount:amount
-//         }], {session : session})
-
-//         const updatedBooking = await BookingModel.findByIdAndUpdate(
-//             booking[0]._id, 
-//             {payment : payment[0]._id},
-//             {new:true, runValidators:true, session:session}
-        
-//         ).populate("user", "name email phone address")
-//         .populate("tour", "title costForm")
-//         .populate("payment")
-
-
-        
-
-
-//         await session.commitTransaction(); //transaction
-//         session.endSession();
-
-//         return updatedBooking;
-
-//     } catch (error:any) {
-//         await session.abortTransaction(); //rollback
-//         session.endSession();
-//         throw error;
-//     }
-
-// };
-
-
-
 // Create booking
 const createBookingService = async (payload: Partial<IBooking>, userId: string) => {
   const transactionId = getTransactionId();
@@ -203,16 +135,27 @@ const getSingleBookingService = async (bookingId: string) => {
 // Get bookings of a specific user
 const getBookingsByUserService = async (userId: string) => {
   return await BookingModel.find({ user: userId })
-    .populate("tour")
-    .populate("payment");
+    // .populate("tour")
+    // .populate("payment");
 };
 
-// Update booking
-const updateBookingService = async (bookingId: string, payload: Partial<IBooking>) => {
-  return await BookingModel.findByIdAndUpdate(bookingId, payload, {
-    new: true,
-    runValidators: true,
-  });
+// service
+const updateBookingStatusService = async (
+  bookingId: string,
+  payload: Partial<IBooking>
+) => {
+  // pick only status field from payload
+  const { status } = payload;
+
+  if (!status) {
+    throw new AppError("Only booking status can be updated", 400);
+  }
+
+  return await BookingModel.findByIdAndUpdate(
+    bookingId,
+    { status },
+    { new: true, runValidators: true }
+  );
 };
 
 // Delete booking
@@ -225,6 +168,8 @@ export const BookingService = {
   getAllBookingService,
   getSingleBookingService,
   getBookingsByUserService,
-  updateBookingService,
+  updateBookingStatusService,
   deleteBookingService,
 };
+
+
