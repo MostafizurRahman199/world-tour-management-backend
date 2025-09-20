@@ -2,14 +2,36 @@ import { Request, Response } from "express";
 import catchAsync from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
 import { TourServices } from "./tour.service";
+import { ITour } from "./tour.interface";
 
 
 
 
 
-// Create tour
- const createTour = catchAsync(async (req: Request, res: Response) => {
-  const result = await TourServices.createTourService(req.body);
+// // Create tour
+//  const createTour = catchAsync(async (req: Request, res: Response) => {
+//   const result = await TourServices.createTourService(req.body);
+
+//   sendResponse(res, {
+//     success: true,
+//     statusCode: 201,
+//     message: "Tour created successfully",
+//     data: result,
+//   });
+// });
+
+
+
+const createTour = catchAsync(async (req: Request, res: Response) => {
+  // Multer files info
+  const images = (req.files as any[])?.map(file => file.path) || [];
+
+  const payload = {
+    ...req.body,
+    images, // array of Cloudinary URLs
+  };
+
+  const result = await TourServices.createTourService(payload);
 
   sendResponse(res, {
     success: true,

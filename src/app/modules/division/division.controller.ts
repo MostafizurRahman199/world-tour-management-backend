@@ -6,9 +6,21 @@ import { sendResponse } from "../../utils/sendResponse";
 import { DivisionServices } from "./division.service";
 
 
-// Create division
+
+
+
+// Create division controller
 export const createDivision = catchAsync(async (req: Request, res: Response) => {
-  const result = await DivisionServices.createDivisionService(req.body);
+
+  // multerUpload.single("file") দিয়ে আসা file info
+  const thumbnailUrl = (req.file as any)?.path; // Cloudinary file URL
+
+  const payload = {
+    ...req.body,
+    thumbnail: thumbnailUrl, // add uploaded file
+  };
+
+  const result = await DivisionServices.createDivisionService(payload);
 
   sendResponse(res, {
     success: true,
@@ -16,7 +28,9 @@ export const createDivision = catchAsync(async (req: Request, res: Response) => 
     message: "Division created successfully",
     data: result,
   });
+
 });
+
 
 
 

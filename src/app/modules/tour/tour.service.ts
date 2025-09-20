@@ -5,19 +5,39 @@ import { TOUR_SEARCHABLE_FIELDS } from "./tour.constant";
 import { ITour } from "./tour.interface";
 import { Tour } from "./tour.model";
 
-// Create Tour
+
+
+
+// // Create Tour
+// const createTourService = async (payload: ITour) => {
+//   // 1. Check for duplicate title
+//   const existingTour = await Tour.findOne({ title: payload.title });
+//   if (existingTour) {
+//     throw new Error("Tour title already exists");
+//   }
+
+//   // 2. Create new tour with slug
+//   const result = await Tour.create(payload);
+
+//   return result;
+// };
+
+
+
+// create tour service
 const createTourService = async (payload: ITour) => {
-  // 1. Check for duplicate title
   const existingTour = await Tour.findOne({ title: payload.title });
   if (existingTour) {
     throw new Error("Tour title already exists");
   }
 
-  // 2. Create new tour with slug
   const result = await Tour.create(payload);
-
   return result;
 };
+
+
+
+
 
 // const getAllToursService = async (query: Record<string, any>) => {
 //   let {
