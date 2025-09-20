@@ -8,11 +8,10 @@ import { DIVISION_SEARCHABLE_FIELDS } from "./division.constant";
 
 
 
-// Create Division
+// Create Division service
 const createDivisionService = async (payload: IDivision) => {
-
   
-  // 1. Check for duplicate name
+  // 1. Check duplicate
   const existingDivision = await Division.findOne({ name: payload.name });
   if (existingDivision) {
     throw new Error("Division name already exists");
@@ -22,6 +21,7 @@ const createDivisionService = async (payload: IDivision) => {
   const result = await Division.create(payload);
   return result;
 };
+
 
 
 
