@@ -24,7 +24,7 @@ import { ITour } from "./tour.interface";
 
 const createTour = catchAsync(async (req: Request, res: Response) => {
   // Multer files info
-  const images = (req.files as any[])?.map(file => file.path) || [];
+  const images = (req.files as Express.Multer.File[])?.map(file => file.path) || [];
 
   const payload = {
     ...req.body,

@@ -6,23 +6,50 @@ import { handleDuplicateKeyError } from "../app/helpers/handleDuplicateKeyError"
 import { handleMongooseValidationError } from "../app/helpers/handleMongooseValidationError";
 import { handleCastError } from "../app/helpers/handleCastError";
 import { handleJwtError } from "../app/helpers/handleJwtError";
+import { deleteImageFromCLoudinary } from "../app/config/cloudinary.config";
 
 const MONGO_ERROR_CODES = {
   DUPLICATE_KEY: 11000,
 };
 
-/* -------------------- Main Middleware -------------------- */
-export const errorHandler = (
+
+
+export const errorHandler = async(
   err: CustomError | ZodError,
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
+
+
+
   let statusCode = (err as CustomError).statusCode || 500;
   let status =
     (err as CustomError).status || (statusCode >= 500 ? "error" : "fail");
   let message = (err as CustomError).message || "Something went wrong!";
   let details: any[] | undefined;
+
+
+  //cloudinary image delete
+  // 🗑️ If there are uploaded files, clean them up
+
+  try {
+    const uploadedFiles: string[] = [];
+
+    if (req.file && (req.file as any).path) {
+      uploadedFiles.push((req.file as any).path);
+    }
+    if (req.files && Array.isArray(req.files)) {
+      uploadedFiles.push(...(req.files as any[]).map((f) => f.path));
+    }
+
+    if (uploadedFiles.length) {
+      await Promise.all(uploadedFiles.map((url) => deleteImageFromCLoudinary(url)));
+    }
+  } catch (cleanupErr) {
+    console.error("Cloudinary cleanup failed ❌", cleanupErr);
+  }
+
 
   // Delegate to helper functions
   if (err instanceof ZodError) {
@@ -44,6 +71,8 @@ export const errorHandler = (
     ({ statusCode, status, message } = handleJwtError(err as CustomError));
   }
 
+
+
   // Always log error internally
   if (process.env.NODE_ENV === "development") {
     console.error("ERROR 💥", {
@@ -56,11 +85,12 @@ export const errorHandler = (
     });
   }
 
+
+
   // Build response payload
   const responsePayload: Record<string, any> = { status, message };
   if (details) responsePayload.details = details;
 
-  // Show stack only in development
   if (process.env.NODE_ENV === "development" && err.stack) {
     responsePayload.stack = err.stack;
   }
