@@ -1,4 +1,6 @@
 import { AppError } from "../../../errors";
+import mongoose from "mongoose";
+import { deleteImageFromCLoudinary } from "../../config/cloudinary.config";
 import { makeSlug } from "../../utils/makeSlug";
 import QueryBuilder from "../../utils/queryBuilder";
 import { TOUR_SEARCHABLE_FIELDS } from "./tour.constant";
@@ -42,61 +44,6 @@ const createTourService = async (payload: ITour) => {
 
 
 
-// const getAllToursService = async (query: Record<string, any>) => {
-//   let {
-//     page = 1,
-//     limit = 10,
-//     sort = "-createdAt",
-//     fields,
-//     search,
-//     ...filters
-//   } = query;
-
-//   page = Number(page);
-//   limit = Number(limit);
-//   const skip = (page - 1) * limit;
-
-//   // Build search query (only if search exists)
-//   const searchQuery = search
-//     ? {
-//         $or: TOUR_SEARCHABLE_FIELDS.map((field) => ({
-//           [field]: { $regex: search, $options: "i" },
-//         })),
-//       }
-//     : {};
-
-//   // Convert filters (case-insensitive for strings)
-//   const processedFilters = Object.fromEntries(
-//     Object.entries(filters).map(([key, value]) => [
-//       key,
-//       typeof value === "string" ? { $regex: value, $options: "i" } : value,
-//     ])
-//   );
-
-//   // Final query object
-//   const queryObj = { ...searchQuery, ...processedFilters };
-
-//   // Count + Query in parallel (faster)
-//   const [total, tours] = await Promise.all([
-//     Tour.countDocuments(queryObj),
-//     Tour.find(queryObj)
-//       .sort(sort)
-//       .select(fields ? fields.split(",").join(" ") : "")
-//       .skip(skip)
-//       .limit(limit),
-//   ]);
-
-//   return {
-//     meta: {
-//       total,
-//       page,
-//       limit,
-//       totalPages: Math.ceil(total / limit),
-//     },
-//     data: tours,
-//   };
-// };
-
 
 
 
@@ -114,33 +61,126 @@ const getAllToursService = async (query: Record<string, any>) => {
 
 
 
-// Update Tour
-const updateTourService = async (id: string, payload: ITour) => {
-  // 1. Check if tour exists
-  const existingTour = await Tour.findById(id);
-  if (!existingTour) {
-    throw new Error("Tour not found");
-  }
+// // Update Tour service
+// const updateTourService = async (id: string, payload: ITour) => {
+//   // 1. Check if tour exists
+//   const existingTour = await Tour.findById(id);
+//   if (!existingTour) {
+//     throw new Error("Tour not found");
+//   }
 
-  // 2. Check for duplicate title (excluding current tour)
-  if (payload.title) {
-    const duplicate = await Tour.findOne({
-      title: payload.title,
-      _id: { $ne: id }, // exclude current tour
-    });
+//   // 2. Check for duplicate title (excluding current tour)
+//   if (payload.title) {
+//     const duplicate = await Tour.findOne({
+//       title: payload.title,
+//       _id: { $ne: id }, // exclude current tour
+//     });
 
-    if (duplicate) {
-      throw new Error("Tour title already exists");
+//     if (duplicate) {
+//       throw new Error("Tour title already exists");
+//     }
+//   }
+
+//   // 3. Update tour
+//   const result = await Tour.findByIdAndUpdate(id, payload, {
+//     new: true,
+//     runValidators: true,
+//   });
+
+//   return result;
+// };
+
+
+
+
+
+
+
+
+export const updateTourService = async (id: string, payload: Partial<ITour>) => {
+ 
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    // 1. Check if tour exists
+    const existingTour = await Tour.findById(id).session(session);
+
+    if (!existingTour) {
+      throw new Error("Tour not found");
     }
+
+    // 2. Check for duplicate title
+    if (payload.title) {
+      const duplicate = await Tour.findOne({
+        title: payload.title,
+        _id: { $ne: id },
+      }).session(session);
+
+      if (duplicate) {
+        throw new Error("Tour title already exists");
+      }
+    }
+
+    let updatedImages: string[] = [];
+
+    if(existingTour.images && existingTour.images.length){
+
+      updatedImages = [...existingTour.images]; // start with current images
+    }
+    // 🖼️ Image handling logic
+
+    // Case 5: Clear all images
+    if (payload.clearImages && existingTour.images?.length) {
+      for (const img of existingTour.images) {
+        await deleteImageFromCLoudinary(img);
+      }
+      updatedImages = [];
+    }
+
+
+    // Case 3: Remove selected images
+    if (payload.imagesToDelete && payload.imagesToDelete.length > 0) {
+      for (const img of payload.imagesToDelete) {
+        if (updatedImages.includes(img)) {
+          await deleteImageFromCLoudinary(img);
+          updatedImages = updatedImages.filter(i => i !== img);
+        }
+      }
+    }
+
+    
+    // Case 1: Add new images
+    if (payload.newImages && payload.newImages.length > 0) {
+      updatedImages = [...updatedImages, ...payload.newImages];
+    }
+
+
+    // Case 2: Replace all images (clear old + set new)
+    if (payload.newImages && payload.clearImages) {
+      // already handled above: clear + then add new
+      updatedImages = [...payload.newImages];
+    }
+
+
+    // 4. Update tour with final images array
+    const result = await Tour.findByIdAndUpdate(
+      id,
+      { ...payload, images: updatedImages },
+      { new: true, runValidators: true, session }
+    );
+
+    // ✅ Commit transaction
+    await session.commitTransaction();
+    session.endSession();
+
+    return result;
+  } catch (error) {
+    // ❌ Rollback
+    await session.abortTransaction();
+    session.endSession();
+    throw error;
   }
-
-  // 3. Update tour
-  const result = await Tour.findByIdAndUpdate(id, payload, {
-    new: true,
-    runValidators: true,
-  });
-
-  return result;
 };
 
 

@@ -65,10 +65,78 @@ const createTour = catchAsync(async (req: Request, res: Response) => {
 
 
 
-//update tourType 
+// //update tourType  controller
+// const updateTour = catchAsync(async (req: Request, res: Response) => {
+
+//   const { id } = req.params;
+
+
+//     // Multer files info
+//   const images = (req.files as Express.Multer.File[])?.map(file => file.path) || [];
+
+//   const payload = {
+//     ...req.body,
+//     images, // array of Cloudinary URLs
+//   };
+
+//   const result = await TourServices.updateTourService(id, payload);
+
+//   sendResponse(res, {
+//     success: true,
+//     statusCode: 200,
+//     message: "Tour updated successfully",
+//     data: result,
+//   });
+// });
+
+
+
+
+// delete tour 
+
+
+
+// const updateTour = catchAsync(async (req: Request, res: Response) => {
+//   const { id } = req.params;
+
+//   // Multer → new uploaded images (Cloudinary URLs)
+//   const newImages = (req.files as Express.Multer.File[])?.map(file => file.path) || [];
+
+//   // Parse text inputs properly
+//   const payload = {
+//     ...req.body,
+//     newImages,
+//     imagesToDelete: req.body.imagesToDelete ? JSON.parse(req.body.imagesToDelete) : [],
+//     clearImages: req.body.clearImages === "true", // convert "true"/"false" string to boolean
+//   };
+
+
+
+
+//   const result = await TourServices.updateTourService(id, payload);
+
+//   sendResponse(res, {
+//     success: true,
+//     statusCode: 200,
+//     message: "Tour updated successfully",
+//     data: result,
+//   });
+// });
+
 const updateTour = catchAsync(async (req: Request, res: Response) => {
+  
   const { id } = req.params;
-  const result = await TourServices.updateTourService(id, req.body);
+
+const newImages = (req.files as Express.Multer.File[])?.map(file => file.path) || [];
+
+  const payload = {
+    ...req.body, 
+    newImages: newImages,
+  };
+
+  console.log(payload);
+
+  const result = await TourServices.updateTourService(id, payload);
 
   sendResponse(res, {
     success: true,
@@ -81,7 +149,8 @@ const updateTour = catchAsync(async (req: Request, res: Response) => {
 
 
 
-// delete tour 
+
+
 
 const deleteTour = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;

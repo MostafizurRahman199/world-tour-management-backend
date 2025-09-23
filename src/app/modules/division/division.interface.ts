@@ -8,6 +8,7 @@ export interface IDivision{
     thumbnail?: string;
     description?: string;
 
+   
     createdAt?: Date;
     updatedAt?: Date;
 

@@ -23,4 +23,10 @@ export interface ITour {
   minAge?: number;
   division: Types.ObjectId; // Reference to Division ID
   tourType: Types.ObjectId; // Reference to TourType ID
+
+
+  newImages?: string[];       // files uploaded
+  imagesToDelete?: string[];  // URLs to delete
+  clearImages?: boolean; 
+
 }

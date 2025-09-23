@@ -13,6 +13,7 @@ const MONGO_ERROR_CODES = {
 };
 
 
+//global error handler
 
 export const errorHandler = async(
   err: CustomError | ZodError,

@@ -21,6 +21,7 @@ router.post(
 router.patch(
   "/update-division/:id",
   checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
+  multerUpload.single("file"),
   validateUpdateDivision,
   DivisionController.updateDivision
 );
