@@ -1,4 +1,5 @@
 import { AppError } from "../../../errors";
+import { getTransactionId } from "../../utils/getTransactionId";
 import { PAYMENT_STATUS } from "../payment/payment.interface";
 import { PaymentModel } from "../payment/payment.model";
 import { SSLService } from "../sslCommerz/sslCommerz.service";
@@ -10,9 +11,6 @@ import { BookingModel } from "./booking.model";
 
 
 
-const getTransactionId = ()=>{
-    return `tran_${Date.now()}_${Math.floor(Math.random() * 1000)}`
-}
 
 
 

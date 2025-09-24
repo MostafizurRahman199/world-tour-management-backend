@@ -13,6 +13,8 @@ const router = Router();
 // Apply validation middleware to routes
 router.post("/register", validateRegisterUser, UserController.createUser);
 router.get("/all-users", checkAuth(Role.ADMIN, Role.SUPER_ADMIN), UserController.getAllUsers);
+router.get("/me", checkAuth(...Object.values(Role)), UserController.getMe);
+
 
 
 
