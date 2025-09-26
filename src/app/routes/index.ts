@@ -6,6 +6,7 @@ import { TourRouter } from "../modules/tour/tour.route";
 import { TourTypeRouter } from "../modules/TourType/tourType.route";
 import { BookingRouter } from "../modules/booking/booking.route";
 import { PaymentRouter } from "../modules/payment/payment.route";
+import { otpRouter } from "../modules/otp/otp.route";
 
 
 
@@ -39,6 +40,10 @@ const moduleRoutes = [
     {
         path:"/payment",
         route:PaymentRouter
+    },
+    {
+        path:"/otp",
+        route:otpRouter
     }
 ]
 

@@ -158,9 +158,10 @@ export const forgetPassword = async (email: string) => {
   // short expiry token (10 minutes)
   const resetToken = generateToken(
     {
+      email:user.email,  
       userId: user._id,
       password: user.password, // hashed password
-      
+      role:user.role
     },
     ENV.JWT_SECRET,
     "10m"

@@ -7,6 +7,7 @@ import mongoose from "mongoose";
 import app from "./app";
 import {ENV} from "./app/config/env";
 import { seedSuperAdmin } from "./app/utils/seedSuperAdmin";
+import { getRedisClient } from "./app/config/redis.config";
 
 
 let server: Server;
@@ -79,8 +80,8 @@ process.on("SIGTERM", () => {
 
 
 (async ()=>{
+    await getRedisClient();
     await startServer();
     await seedSuperAdmin();
-
 })();
 

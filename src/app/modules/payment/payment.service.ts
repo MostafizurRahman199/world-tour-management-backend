@@ -1,4 +1,10 @@
 import { AppError } from "../../../errors";
+import { uploadPDFToCloudinary } from "../../config/cloudinary.config";
+import { sendEmail } from "../../config/nodemailer";
+import { generatePDF, InvoiceData } from "../../utils/invoiceGenerator";
+
+
+
 import { BOOKING_STATUS } from "../booking/booking.interface";
 import { BookingModel } from "../booking/booking.model";
 import { SSLService } from "../sslCommerz/sslCommerz.service";
@@ -8,37 +14,98 @@ import { PaymentModel } from "./payment.model";
 
 
 
-const successPayment = async (query: Record<string, string>) => {
+
+
+export const successPayment = async (query: Record<string, string>) => {
   const session = await BookingModel.startSession();
   session.startTransaction();
 
   try {
-    // Update Payment
-    const updatedPayment = await PaymentModel.findOneAndUpdate(
+
+    // 1. Update payment
+    const payment = await PaymentModel.findOneAndUpdate(
       { transactionId: query.transactionId },
       { status: PAYMENT_STATUS.PAID },
       { new: true, runValidators: true, session }
     );
+    if (!payment) throw new AppError("Payment record not found");
 
-    if (!updatedPayment) throw new AppError("Payment record not found");
+    // 2. Update booking
+    const booking = await BookingModel.findById(payment.booking)
+      .populate("user", "name email phone address")
+      .populate("tour", "title")
+      .session(session);
+    if (!booking) throw new AppError("Booking not found");
 
-    // Update Booking
-    await BookingModel.findOneAndUpdate(
-      updatedPayment.booking,
-      { status: BOOKING_STATUS.COMPLETE },
-      { new: true, runValidators: true, session }
-    );
+    booking.status = BOOKING_STATUS.COMPLETE;
+    await booking.save({ session });
 
+    // 3. Prepare invoice data
+    const invoiceData: InvoiceData = {
+      transactionId: payment.transactionId,
+      amount: payment.amount,
+      bookingId: booking._id.toString(),
+      tourTitle: (booking.tour as any)?.title || "N/A",
+      guestCount: (booking as any).guestCount || 1,
+      date: booking.createdAt as Date,
+      user: {
+        name: (booking.user as any).name,
+        email: (booking.user as any).email,
+        phone: (booking.user as any).phone,
+        address: (booking.user as any).address,
+      },
+    };
+
+    // 4. Generate PDF
+    const pdfBuffer = await generatePDF(invoiceData);
+
+    // 5. Upload PDF to Cloudinary using separate function
+    const uploaded = await uploadPDFToCloudinary(pdfBuffer, payment.transactionId);
+    
+    payment.invoiceUrl = uploaded.secure_url;
+    await payment.save({ session });
+
+    // 6. Send invoice email with EJS template and PDF attachment
+    await sendEmail({
+      to: invoiceData.user.email,
+      subject: `Invoice for Booking ${invoiceData.bookingId}`,
+      template: "invoiceTemplate",
+      templateData: invoiceData,
+      attachments: [
+        {
+          filename: `invoice-${invoiceData.transactionId}.pdf`,
+          content: pdfBuffer,
+          contentType: "application/pdf"
+        },
+      ],
+    });
+
+    // 7. Commit transaction
     await session.commitTransaction();
     session.endSession();
 
-    return { success: true, message:"Payment Successful" };
+    return { 
+      success: true, 
+      message: "Payment Successful", 
+      invoiceUrl: payment.invoiceUrl 
+    };
+
   } catch (error: any) {
     await session.abortTransaction();
     session.endSession();
-    throw new AppError("Payment success update failed", error);
+    
+    // Log the error for debugging
+    console.error("Payment success error:", error);
+    
+    throw new AppError(
+      "Payment success update failed", 
+      error?.message || error
+    );
   }
 };
+
+
+
 
 
 
@@ -161,3 +228,10 @@ export const PaymentService = {
   cancelPayment,
   initPayment,
 };
+
+
+
+
+
+
+

@@ -21,7 +21,7 @@ router.post("/set-password",checkAuth(...Object.values(Role)) , AuthControllers.
 //-> /reset-password (backend) api hit -> authorization = token -> new password in body -> token verifiy -> hash pasword and set it -> save user password
 
 router.post("/forget-password", AuthControllers.forgetPassword);
-router.post("/reset-password",AuthControllers.resetPassword);
+router.post("/reset-password", checkAuth(...Object.values(Role)), AuthControllers.resetPassword);
 
 
 
