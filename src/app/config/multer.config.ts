@@ -1,52 +1,34 @@
-// src/config/multer.ts
+
+
 import multer from "multer";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
 import { cloudinaryUpload } from "./cloudinary.config";
-import { getAllowedTypes } from "../utils/fileTypes";
-
-const allowedTypes = getAllowedTypes(process.env.ALLOWED_FILE_CATEGORY || "image");
-
 
 
 const storage = new CloudinaryStorage({
+    cloudinary: cloudinaryUpload,
+    params: {
+        public_id: (req, file) => {
+            // My Special.Image#!@.png => 4545adsfsadf-45324263452-my-image.png
+            // My Special.Image#!@.png => [My Special, Image#!@, png]
 
-  cloudinary : cloudinaryUpload,
-
-  params: async (req, file) => {
-
-    const uniqueName = `${Date.now()}-${Math.random()
-      .toString(36)
-      .substring(2, 8)}-${file.originalname.split(".")[0]}`;
-
-    return {
-      folder: "worldTourManagement/uploads",
-      format: file.mimetype.split("/")[1],
-      public_id: uniqueName,
-      resource_type: "auto",
-    };
-  },
-});
+            const fileName = file.originalname
+                .toLowerCase()
+                .replace(/\s+/g, "-") // empty space remove replace with dash
+                .replace(/\./g, "-")
+                // eslint-disable-next-line no-useless-escape
+                .replace(/[^a-z0-9\-\.]/g, "") // non alpha numeric - !@#$
 
 
+            // binary -> 0,1 hexa decimal -> 0-9 A-F base 36 -> 0-9 a-z
+            // 0.2312345121 -> "0.hedfa674338sasfamx" -> 
+            //452384772534
 
+            const uniqueFileName = Math.random().toString(36).substring(2) + "-" + Date.now() + "-" + fileName;
 
-export const multerUpload = multer({
-
-  storage,
-
-  limits: { fileSize: 50 * 1024 * 1024 }, // default 50MB
-
-  fileFilter: (req, file, cb) => {
-
-    if (!allowedTypes.includes(file.mimetype)) {
-
-      return cb(
-        new Error(
-          `Invalid file type: ${file.mimetype}. Allowed types are: ${allowedTypes.join(", ")}`
-        )
-      );
-
+            return uniqueFileName
+        }
     }
-    cb(null, true);
-  },
-});
+})
+
+export const multerUpload = multer({ storage: storage })

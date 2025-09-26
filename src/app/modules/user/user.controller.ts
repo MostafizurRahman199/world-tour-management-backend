@@ -3,7 +3,7 @@ import catchAsync from "../../utils/catchAsync";
 import { UserServices } from "./user.service";
 import { sendResponse } from "../../utils/sendResponse";
 import { verifyToken } from "../../utils/jwt";
-import { JwtHeader } from "jsonwebtoken";
+import { JwtHeader, JwtPayload } from "jsonwebtoken";
 
 
 
@@ -38,6 +38,24 @@ const getAllUsers = catchAsync(async (req: Request, res: Response) => {
 
 
 });
+
+
+// Get all users
+  const getMe = catchAsync(async (req: Request, res: Response) => {
+
+  const decodedToken = req.user as JwtPayload;
+  const result = await UserServices.getMe(decodedToken.userId);
+
+ 
+  sendResponse(res, {
+        success: true,
+        statusCode: 200,
+        message: "User retrieved successfully",
+        data: result,
+      });
+
+    });
+
 
 
 
@@ -131,4 +149,5 @@ export const UserController = {
   getUserById,
   updateUser,
   deleteUser,
+  getMe,
 };

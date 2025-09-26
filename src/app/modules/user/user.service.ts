@@ -55,9 +55,26 @@ const getAllUsersService = async (query: Record<string, any>) => {
 
 
 
+const getMe = async (userId:string) => {
+
+  const  user = await User.findById(userId).select("-password");
+
+  if(!user){
+    throw new AppError("User not found")
+  }
+
+
+  return {
+   data : user
+  }
+};
+
+
+
+
 
 const getUserByIdService = async (userId: string) => {
-  const user = await User.findById(userId);
+  const user = await User.findById(userId).select("-password");
   return user;
 };
 
@@ -126,4 +143,5 @@ export const UserServices = {
   getUserByIdService,
   updateUserService,
   deleteUserService,
+  getMe,
 };

@@ -40,6 +40,10 @@ async (req: Request, res: Response, next: NextFunction) => {
         throw new AppError("User is deleted");
       }
 
+      if(!isUserExist.isVerified){
+        throw new AppError('User is not verified');
+      }
+
       if (!verifiedToken) {
         throw new AppError(
           "Invalid token, and token is : " + { verifiedToken }

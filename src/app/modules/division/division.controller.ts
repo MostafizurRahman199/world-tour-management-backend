@@ -38,8 +38,18 @@ export const createDivision = catchAsync(async (req: Request, res: Response) => 
 
 // Update division
 export const updateDivision = catchAsync(async (req: Request, res: Response) => {
+
+
   const { id } = req.params;
-  const result = await DivisionServices.updateDivisionService(id, req.body);
+  const thumbnailUrl = (req.file as any)?.path; // Cloudinary file URL
+
+  const payload = {
+    ...req.body,
+    thumbnail: thumbnailUrl, // add uploaded file
+  };
+
+
+  const result = await DivisionServices.updateDivisionService(id, payload);
 
   sendResponse(res, {
     success: true,

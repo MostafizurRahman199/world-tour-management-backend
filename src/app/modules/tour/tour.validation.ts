@@ -49,6 +49,12 @@ const updateTourValidationSchema = z.object({
   minAge: z.number().min(0, "Min age must be a non-negative number").optional(),
   division: z.string().optional(),
   tourType: z.string().optional(),
+
+
+   // New fields for image handling
+  newImages: z.array(z.string().url()).optional(),
+  imagesToDelete: z.array(z.string().url()).optional(),
+  clearImages: z.boolean().optional(),
 }).partial();
 
 export const validateCreateTour = validateRequest(createTourValidationSchema);
