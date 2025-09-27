@@ -48,31 +48,6 @@ This is the backend API for the **World Tour Management System**. It is built wi
 
 ---
 
-## Project Structure
-
-src/
-├─ app/
-│ ├─ modules/
-│ │ ├─ auth/
-│ │ ├─ user/
-│ │ ├─ division/
-│ │ ├─ tour/
-│ │ ├─ tourType/
-│ │ ├─ booking/
-│ │ ├─ payment/
-│ │ ├─ stats/
-│ │ └─ otp/
-│ ├─ config/
-│ │ ├─ env.ts
-│ │ ├─ multer.config.ts
-│ │ └─ passport.config.ts
-│ └─ utils/
-├─ middleware/
-├─ server.ts
-└─ index.ts
-
-yaml
-Copy code
 
 ---
 
