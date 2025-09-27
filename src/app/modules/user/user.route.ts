@@ -20,7 +20,9 @@ router.get("/me", checkAuth(...Object.values(Role)), UserController.getMe);
 
 // New routes with validation
 router.get("/single-user/:id", checkAuth(Role.ADMIN, Role.SUPER_ADMIN), UserController.getUserById);
+
 router.put("/update-user/:id",checkAuth(...Object.values(Role)), validateUpdateUser, UserController.updateUser);
+
 router.delete("/delete-user/:id", checkAuth(Role.ADMIN, Role.SUPER_ADMIN), UserController.deleteUser);
 
 export const UserRouter = router;

@@ -3,11 +3,12 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-
   "scripts": {
-  "dev": "ts-node-dev --respawn --transpile-only ./src/server.ts",
-  "build": "tsc",
-  "start": "node dist/api/index.js"
+    "start": "node ./dist/server.js",
+    "dev": "ts-node-dev --respawn --transpile-only ./src/server.ts",
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "npx eslint ./src"
   },
   "keywords": [],
   "author": "",
@@ -36,7 +37,7 @@
     "@types/pdfkit": "^0.17.3",
     "axios": "^1.12.2",
     "bcryptjs": "^3.0.2",
-    "cloudinary": "^2.7.0",
+    "cloudinary": "^1.41.3",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^17.2.1",
