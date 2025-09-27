@@ -9,5 +9,9 @@ router.post("/cancel", PaymentController.cancelPayment);
 
 router.post("/init-payment/:bookingId", PaymentController.initPayment);
 
+router.get("/invoice/:paymentId", PaymentController.getInvoice);
+
+router.post("/validate-payment", PaymentController.validatePayment);
+
 export const PaymentRouter = router;
 

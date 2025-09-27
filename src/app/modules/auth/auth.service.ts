@@ -55,35 +55,47 @@ const getNewAccessToken = async (refreshToken: string) => {
 }
 
 
-const changePassword = async (decodedToken: JwtPayload, newPassword: string, oldPassword: string) => {
+const changePassword = async (
+  decodedToken: JwtPayload,
+  newPassword: string,
+  oldPassword: string
+) => {
+  const userEmail = decodedToken.email;
+  const user = await User.findOne({ email: userEmail });
 
-    const userEmail = decodedToken.email;
-    const user = await User.findOne({ email: userEmail });
+  if (!user) {
+    throw new AppError("User not found", 404);
+  }
 
-    if (!user) {
-        throw new AppError("User not found");
-    }
+  if (!user.password) {
+    throw new AppError("User password not found", 400);
+  }
 
-    if(!user.password) {
-        throw new AppError("User password not found");
-    }
+  // 1. Verify old password
+  const isOldPasswordMatch = await bcryptjs.compare(oldPassword, user.password);
+  if (!isOldPasswordMatch) {
+    throw new AppError("Old password is incorrect", 401);
+  }
 
-    const isOldPasswordMatch = bcryptjs.compare(oldPassword, user.password);
+  // 2. Prevent new password being same as old
+  const isSameAsOld = await bcryptjs.compare(newPassword, user.password);
+  if (isSameAsOld) {
+    throw new AppError("New password cannot be the same as the old password", 400);
+  }
 
-    if (!isOldPasswordMatch) {
-        throw new AppError("Old password is incorrect");
-    }
+  // 3. Hash and update new password
+  const hashNewPassword = await bcryptjs.hash(
+    newPassword,
+    ENV.BCRYPT_SALT_ROUNDS // make sure ENV is a number
+  );
 
-    const hashNewPassword = await bcryptjs.hash(newPassword as string, ENV.BCRYPT_SALT_ROUNDS);
+  user.password = hashNewPassword;
+  await user.save();
 
-    user.password = hashNewPassword;
-    await user.save();
-
-
-    return {
-        success: true,
-        message: "Password reset successfully",
-    };
+  return {
+    success: true,
+    message: "Password reset successfully",
+  };
 };
 
 
