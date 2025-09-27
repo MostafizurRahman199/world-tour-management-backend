@@ -3,6 +3,7 @@ import catchAsync from "../../utils/catchAsync";
 import { PaymentService } from "./payment.service";
 import { ENV } from "../../config/env";
 import { sendResponse } from "../../utils/sendResponse";
+import { SSLService } from "../sslCommerz/sslCommerz.service";
 
 
 
@@ -67,11 +68,43 @@ const cancelPayment = catchAsync(async (req: Request, res: Response) => {
 
 
 
+const getInvoice = catchAsync(async (req: Request, res: Response) => {
+  const { paymentId } = req.params;
+  const result = await PaymentService.getInvoice(paymentId);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: 200,
+    message: "Invoice retrieved successfully",
+    data: result,
+  });
+});
+
+
+
+
+const validatePayment = catchAsync(async (req: Request, res: Response) => {
+  
+  const payload = req.body; // ✅ SSLCommerz will send val_id, tran_id, etc.
+
+  const result = await SSLService.validatePayment(payload);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: 200,
+    message: "Payment validated successfully",
+    data: result,
+  });
+});
+
+
 export const PaymentController = {
   successPayment,
   failPayment,
   cancelPayment,
-  initPayment
+  initPayment,
+  getInvoice,
+  validatePayment,
 };
 
 

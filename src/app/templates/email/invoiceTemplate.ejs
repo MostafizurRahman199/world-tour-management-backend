@@ -4,40 +4,152 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>Invoice</title>
+    <title>Payment Invoice</title>
     <style>
-      body { font-family: Arial, sans-serif; font-size: 14px; color: #333; }
-      .header { text-align: center; margin-bottom: 20px; }
-      .details { margin-bottom: 20px; }
-      .footer { margin-top: 30px; text-align: center; color: #666; font-size: 12px; }
-      .table { width: 100%; border-collapse: collapse; }
-      .table th, .table td { padding: 8px; border: 1px solid #ddd; text-align: left; }
+      body {
+        font-family: "Helvetica Neue", Arial, sans-serif;
+        font-size: 14px;
+        color: #333;
+        margin: 0;
+        padding: 0;
+        background-color: #f8f9fa;
+      }
+      .container {
+        max-width: 700px;
+        margin: 20px auto;
+        background: #ffffff;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        overflow: hidden;
+      }
+      .header {
+        background: #2c5aa0;
+        color: #fff;
+        padding: 20px;
+        text-align: center;
+      }
+      .header h2 {
+        margin: 0;
+        font-size: 24px;
+      }
+      .company-info {
+        font-size: 12px;
+        margin-top: 8px;
+        opacity: 0.9;
+      }
+      .section {
+        padding: 20px;
+        border-bottom: 1px solid #e9ecef;
+      }
+      .section h4 {
+        margin: 0 0 12px;
+        color: #2c5aa0;
+      }
+      .details p {
+        margin: 4px 0;
+      }
+      .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+      }
+      .table th {
+        background: #f1f3f5;
+        color: #333;
+        padding: 10px;
+        border: 1px solid #dee2e6;
+        text-align: left;
+      }
+      .table td {
+        padding: 10px;
+        border: 1px solid #dee2e6;
+      }
+      .total {
+        text-align: right;
+        font-weight: bold;
+        font-size: 16px;
+        color: #2c5aa0;
+      }
+      .footer {
+        padding: 15px;
+        text-align: center;
+        color: #6c757d;
+        font-size: 12px;
+      }
+      .status {
+        color: #28a745;
+        font-weight: bold;
+        margin-top: 10px;
+      }
     </style>
   </head>
   <body>
-    <div class="header">
-      <h2>Payment Invoice</h2>
-    </div>
+    <div class="container">
 
-    <div class="details">
-      <p><strong>Transaction ID:</strong> <%= transactionId %></p>
-      <p><strong>Booking ID:</strong> <%= bookingId %></p>
-      <p><strong>Tour:</strong> <%= tourTitle %></p>
-      <p><strong>Amount:</strong> <%= amount %> BDT</p>
-      <p><strong>Guest Count:</strong> <%= guestCount %></p>
-      <p><strong>Date:</strong> <%= date %></p>
-    </div>
+      <!-- Header -->
+      <div class="header">
+        <h2>Payment Invoice 💲</h2>
+        <div class="company-info">
+          WorldTour · 123 Travel Street, Tourism City · worldtour@gmail.com
+        </div>
+      </div>
 
-    <div>
-  <h4>Customer Details</h4>
-  <p><strong>Name:</strong> <%= user.name %></p>
-  <p><strong>Email:</strong> <%= user.email %></p>
-  <% if (user.phone) { %><p><strong>Phone:</strong> <%= user.phone %></p><% } %>
-  <% if (user.address) { %><p><strong>Address:</strong> <%= user.address %></p><% } %>
-</div>
+      <!-- Invoice Details -->
+      <div class="section details">
+        <h4>Invoice Details</h4>
+        <p><strong>Transaction ID:</strong> <%= transactionId %></p>
+        <p><strong>Booking ID:</strong> <%= bookingId %></p>
+        <p><strong>Tour:</strong> <%= tourTitle %></p>
+        <p><strong>Guest Count:</strong> <%= guestCount %></p>
+        <p><strong>Date:</strong> <%= date %></p>
+      </div>
 
-    <div class="footer">
-      <p>Thank you for your payment.</p>
+      <!-- Customer Details -->
+      <div class="section">
+        <h4>Customer Details</h4>
+        <p><strong>Name:</strong> <%= user.name %></p>
+        <p><strong>Email:</strong> <%= user.email %></p>
+        <% if (user.phone) { %>
+          <p><strong>Phone:</strong> <%= user.phone %></p>
+        <% } %>
+        <% if (user.address) { %>
+          <p><strong>Address:</strong> <%= user.address %></p>
+        <% } %>
+      </div>
+
+      <!-- Payment Summary -->
+      <div class="section">
+        <h4>Payment Summary</h4>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Description</th>
+              <th>Amount (BDT)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><%= tourTitle %> (for <%= guestCount %> Guest(s))</td>
+              <td><%= amount %></td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td class="total">Total</td>
+              <td class="total"><%= amount %> BDT</td>
+            </tr>
+          </tfoot>
+        </table>
+        <div class="status">✓ Payment Successful</div>
+      </div>
+
+      <!-- Footer -->
+      <div class="footer">
+        Thank you for your booking.  
+        <br />If you have any questions, contact us at <strong>support@tourvista.com</strong>
+        <br /><br />
+        <em>This is a computer-generated invoice and does not require a signature.</em>
+      </div>
     </div>
   </body>
 </html>

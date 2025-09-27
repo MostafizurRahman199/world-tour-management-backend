@@ -60,15 +60,7 @@ export const updateUserZodSchema = z.object({
 //     .email("Invalid email format")
 //     .optional(),
   
-  password: z.string()
-    .min(6, "Password must be at least 6 characters")
-    .max(50, "Password cannot exceed 50 characters")
-    .regex(
-      /^(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?])/,
-      "Password must contain at least one special character"
-    )
-    .optional()
-    .or(z.literal('')),
+
   
   role: z.nativeEnum(Role).optional(),
   

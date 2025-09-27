@@ -3,6 +3,11 @@ import axios from "axios";
 import { ISSLCommerz } from "./sslCommerz.interface";
 import { ENV } from "../../config/env";
 import { AppError } from "../../../errors";
+import { PaymentModel } from "../payment/payment.model";
+import { PAYMENT_STATUS } from "../payment/payment.interface";
+
+
+
 
 const sslPaymentInit = async (payload: ISSLCommerz) => {
   const data = {
@@ -16,8 +21,10 @@ const sslPaymentInit = async (payload: ISSLCommerz) => {
     success_url: `${ENV.SSL_BACKEND_SUCCESS_URL}?transactionId=${payload.transactionId}&amount=${payload.amount}&status=success`,
 
     fail_url: `${ENV.SSL_BACKEND_FAIL_URL}?transactionId=${payload.transactionId}&amount=${payload.amount}&status=fail`,
-    
+
     cancel_url: `${ENV.SSL_BACKEND_CANCEL_URL}?transactionId=${payload.transactionId}&amount=${payload.amount}&status=cancel`,
+
+    ipn_url:ENV.SSL_IPN_URL,
 
     emi_option: 0,
     cus_name: payload.name,
@@ -58,6 +65,42 @@ const sslPaymentInit = async (payload: ISSLCommerz) => {
   }
 };
 
+
+
+
+ const validatePayment = async (payload: any) => {
+  try {
+
+    const response = await axios.get(ENV.SSL_VALIDATION_API, {
+      params: {
+        val_id: payload.val_id,
+        store_id: ENV.SSL_STORE_ID,
+        store_passwd: ENV.SSL_STORE_PASSWORD, 
+      },
+    });
+
+    const gatewayResponse = response.data;
+
+    // Update payment record
+    await PaymentModel.updateOne(
+      { transactionId: payload.tran_id },
+      {
+        paymentGatewayData: gatewayResponse,
+        status: gatewayResponse.status === "VALID" ? PAYMENT_STATUS.PAID : PAYMENT_STATUS.FAILED,
+      },
+      { runValidators: true }
+    );
+
+    return gatewayResponse; // return data if caller needs it
+  } catch (error: any) {
+    console.error("Payment validation failed:", error.message);
+    throw new Error("Payment validation failed");
+  }
+};
+
+
+
 export const SSLService = {
   sslPaymentInit,
+  validatePayment
 };

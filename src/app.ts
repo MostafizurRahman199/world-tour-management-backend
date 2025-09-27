@@ -1,3 +1,5 @@
+//src/app.ts
+
 import express, { NextFunction, Request, Response } from "express";
 import cors from "cors";
 import router from "./app/routes";
@@ -7,6 +9,7 @@ import cookieParser from "cookie-parser";
 import passport from "passport";
 import expressSession from "express-session";
 import "./app/config/passport";
+import { ENV } from "./app/config/env";
 
 const app = express();
 
@@ -23,7 +26,12 @@ app.use(passport.session());
 
 
 app.use(cookieParser());
-app.use(cors());
+
+app.use(cors({
+  origin: ENV.FRONTEND_URL,
+  credentials:true,
+}));
+
 app.use(express.json());
 app.use(express.urlencoded({extended:true})); //for form data handle
 
