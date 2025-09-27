@@ -97,3 +97,4 @@ Thumbs.db
 # Build output (if you have any build process)
 dist/
 build/
+.vercel

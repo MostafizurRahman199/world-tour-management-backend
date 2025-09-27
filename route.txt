@@ -1,0 +1,125 @@
+User Routes (/user)
+
+POST https://worldtourmanagementsystem.vercel.app/api/v1/user/register – Create a new user (Public)
+
+GET https://worldtourmanagementsystem.vercel.app/api/v1/user/all-users – Retrieve all users (Admin / Super Admin)
+
+GET https://worldtourmanagementsystem.vercel.app/api/v1/user/me – Get authenticated user's details (User / Admin / Super Admin)
+
+GET https://worldtourmanagementsystem.vercel.app/api/v1/user/single-user/:id – Get a single user by ID (Admin / Super Admin)
+
+PUT https://worldtourmanagementsystem.vercel.app/api/v1/user/update-user/:id – Update user details (User / Admin / Super Admin)
+
+DELETE https://worldtourmanagementsystem.vercel.app/api/v1/user/delete-user/:id – Delete a user (Admin / Super Admin)
+
+
+
+
+Authentication Routes (/auth)
+
+POST https://worldtourmanagementsystem.vercel.app/api/v1/auth/login – User login (Public)
+
+POST https://worldtourmanagementsystem.vercel.app/api/v1/auth/refresh-token – Get new access token (Public)
+
+POST https://worldtourmanagementsystem.vercel.app/api/v1/auth/logout – Logout user (User / Admin / Super Admin)
+
+POST https://worldtourmanagementsystem.vercel.app/api/v1/auth/change-password – Change password (User / Admin / Super Admin)
+
+POST https://worldtourmanagementsystem.vercel.app/api/v1/auth/set-password – Set new password (User / Admin / Super Admin)
+
+POST https://worldtourmanagementsystem.vercel.app/api/v1/auth/forget-password – Initiate password reset (Public)
+
+POST https://worldtourmanagementsystem.vercel.app/api/v1/auth/reset-password – Reset password (User / Admin / Super Admin)
+
+GET https://worldtourmanagementsystem.vercel.app/api/v1/auth/google – Google OAuth login (Public)
+
+GET https://worldtourmanagementsystem.vercel.app/api/v1/auth/google/callback – Google OAuth callback (Public)
+
+
+
+
+Division Routes (/division)
+
+POST https://worldtourmanagementsystem.vercel.app/api/v1/division/create – Create division (Admin / Super Admin)
+
+PATCH https://worldtourmanagementsystem.vercel.app/api/v1/division/update-division/:id – Update division (Admin / Super Admin)
+
+DELETE https://worldtourmanagementsystem.vercel.app/api/v1/division/delete/:id – Delete division (Admin / Super Admin)
+
+GET https://worldtourmanagementsystem.vercel.app/api/v1/division/all-divisions – Get all divisions (Public)
+
+GET https://worldtourmanagementsystem.vercel.app/api/v1/division/single-division/:slug – Get single division (Public)
+
+
+
+Tour Routes (/tour)
+
+POST https://worldtourmanagementsystem.vercel.app/api/v1/tour/create-tour – Create tour (Admin / Super Admin)
+
+PATCH https://worldtourmanagementsystem.vercel.app/api/v1/tour/update-tour/:id – Update tour (Admin / Super Admin)
+
+DELETE https://worldtourmanagementsystem.vercel.app/api/v1/tour/delete-tour/:id – Delete tour (Admin / Super Admin)
+
+GET https://worldtourmanagementsystem.vercel.app/api/v1/tour/all-tours – Get all tours (Public)
+
+GET https://worldtourmanagementsystem.vercel.app/api/v1/tour/single-tour/:slug – Get single tour (Public)
+
+
+
+
+Tour Type Routes (/tour-type)
+
+POST https://worldtourmanagementsystem.vercel.app/api/v1/tour-type/create-tour-type – Create tour type (Admin / Super Admin)
+
+PATCH https://worldtourmanagementsystem.vercel.app/api/v1/tour-type/update-tour-type/:id – Update tour type (Admin / Super Admin)
+
+DELETE https://worldtourmanagementsystem.vercel.app/api/v1/tour-type/delete-tour-type/:id – Delete tour type (Admin / Super Admin)
+
+GET https://worldtourmanagementsystem.vercel.app/api/v1/tour-type/all-tour-types – Get all tour types (Public)
+
+
+
+
+Booking Routes (/booking)
+
+POST https://worldtourmanagementsystem.vercel.app/api/v1/booking/create – Create booking (User / Admin / Super Admin)
+
+GET https://worldtourmanagementsystem.vercel.app/api/v1/booking/all-bookings – Get all bookings (Admin / Super Admin)
+
+GET https://worldtourmanagementsystem.vercel.app/api/v1/booking/my-bookings – Get my bookings (User / Admin / Super Admin)
+
+GET https://worldtourmanagementsystem.vercel.app/api/v1/booking/single-booking/:bookingId – Get single booking (User / Admin / Super Admin)
+
+PATCH https://worldtourmanagementsystem.vercel.app/api/v1/booking/update-status/:bookingId – Update booking status (User / Admin / Super Admin)
+
+DELETE https://worldtourmanagementsystem.vercel.app/api/v1/booking/delete/:bookingId – Delete booking (Admin / Super Admin)
+
+
+
+
+Payment Routes (/payment)
+
+POST https://worldtourmanagementsystem.vercel.app/api/v1/payment/init-payment/:bookingId – Initiate payment (User / Admin / Super Admin)
+
+POST https://worldtourmanagementsystem.vercel.app/api/v1/payment/success – Successful payment (Public)
+
+POST https://worldtourmanagementsystem.vercel.app/api/v1/payment/fail – Failed payment (Public)
+
+POST https://worldtourmanagementsystem.vercel.app/api/v1/payment/cancel – Canceled payment (Public)
+
+POST https://worldtourmanagementsystem.vercel.app/api/v1/payment/validate-payment – Validate payment (Public)
+
+GET https://worldtourmanagementsystem.vercel.app/api/v1/payment/invoice/:paymentId – Get invoice (User / Admin / Super Admin)
+
+
+
+
+Stats Routes (/stats)
+
+GET https://worldtourmanagementsystem.vercel.app/api/v1/stats/dashboard – Get dashboard stats (Admin / Super Admin)
+
+OTP Routes (/otp)
+
+POST https://worldtourmanagementsystem.vercel.app/api/v1/otp/send – Send OTP (Public)
+
+POST https://worldtourmanagementsystem.vercel.app/api/v1/otp/verify – Verify OTP (Public)
