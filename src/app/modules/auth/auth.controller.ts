@@ -217,8 +217,7 @@ const resetPassword = catchAsync(async (req: Request, res: Response) => {
 //orginal
 
 const googleAuthCallback = async (req: Request, res: Response, next: NextFunction) => {
-   
-
+  
     let redirectTo = req.query.state ? req.query.state as string : "";
 
     if(redirectTo.startsWith("/")){
@@ -234,45 +233,8 @@ const googleAuthCallback = async (req: Request, res: Response, next: NextFunctio
 
     const tokenInfo =  createUserToken(user);
     setAuthCookies(res, tokenInfo);
-
     res.redirect(`${ENV.FRONTEND_URL}/${redirectTo}`);
-
 };
-
-
-//for see the error
-// export const googleAuthCallback = (req: Request, res: Response, next: NextFunction) => {
-
-//   passport.authenticate("google", { session: false }, (err, user, info) => {
-    
-//     let redirectTo = req.query.state ? (req.query.state as string) : "";
-
-//     if (redirectTo.startsWith("/")) {
-//       redirectTo = redirectTo.slice(1);
-//     }
-
-//     // ❌ Failure
-//     if (err || !user) {
-//       const errorMessage = info?.message || "Authentication failed";
-//       return res.redirect(
-//         `${ENV.FRONTEND_URL}/login?error=${encodeURIComponent(errorMessage)}`
-//       );
-//     }
-
-//     // console.log(user)
-//     // ✅ Success → issue token + set cookies
-//     const tokenInfo = createUserToken(user);
-//     setAuthCookies(res, tokenInfo);
-
-//     res.redirect(`${ENV.FRONTEND_URL}/${redirectTo}`);
-//   })(req, res, next);
-// };
-
-
-
-
-
-
 
 
 

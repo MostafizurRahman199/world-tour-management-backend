@@ -1,35 +1,3 @@
-// import nodemailer from "nodemailer";
-// import { ENV } from "../config/env";
-
-// /**
-//  * Send an email using Gmail SMTP
-//  * @param to Recipient email
-//  * @param subject Email subject
-//  * @param html HTML content of the email
-//  */
-// export const sendEmail = async (to: string, subject: string, html: string) => {
-//   try {
-
-//     const transporter = nodemailer.createTransport({
-//       service: "gmail", // আপনার প্রোভাইডার অনুযায়ী পরিবর্তন করুন
-//       auth: {
-//         user: ENV.SMTP_USER,
-//         pass: ENV.SMTP_PASS,
-//       },
-//     });
-
-//     await transporter.sendMail({
-//       from: ENV.SMTP_USER,
-//       to,
-//       subject,
-//       html,
-//     });
-
-//   } catch (err) {
-//     console.log("Error sending email:", err);
-//     throw new Error("Failed to send email");
-//   }
-// };
 
 
 

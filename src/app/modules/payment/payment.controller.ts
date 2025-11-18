@@ -1,3 +1,4 @@
+// src/modules/payment/controller
 import { Request, Response } from "express";
 import catchAsync from "../../utils/catchAsync";
 import { PaymentService } from "./payment.service";

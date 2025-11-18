@@ -26,11 +26,17 @@ app.use(passport.session());
 
 
 app.use(cookieParser());
+// after deploy
+app.set("trust proxy",1);
 
-app.use(cors({
+const corsOptions = {
   origin: ENV.FRONTEND_URL,
-  credentials:true,
-}));
+  credentials: true, // This is crucial for cookies
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
+};
+
+app.use(cors(corsOptions));
 
 app.use(express.json());
 app.use(express.urlencoded({extended:true})); //for form data handle

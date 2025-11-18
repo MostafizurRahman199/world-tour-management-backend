@@ -12,7 +12,7 @@ import { sendResponse } from "../../utils/sendResponse";
 
 const sendOTP = catchAsync(async (req: Request, res: Response) => {
   
-  const { email, name } = req.body;
+  const { email} = req.body;
 
   if (!email) {
     return sendResponse(res, {
@@ -22,7 +22,7 @@ const sendOTP = catchAsync(async (req: Request, res: Response) => {
     });
   }
 
-  await OTPService.sendOTP(email, name);
+  await OTPService.sendOTP(email);
 
   return sendResponse(res, {
     success: true,

@@ -10,7 +10,7 @@ import { AppError } from "../../../errors";
 
 
 
-export async function sendOTP(email: string, name:string): Promise<string> {
+export async function sendOTP(email: string): Promise<string> {
  
   const user = await User.findOne({email});
   
@@ -21,7 +21,7 @@ export async function sendOTP(email: string, name:string): Promise<string> {
   if(user.isVerified){
     throw new AppError("You are already verified");
   }
-
+  const name = user.name;
   const otp = await generateOTP();
 
   // Store OTP in Redis
